@@ -1,0 +1,18 @@
+upstream flask {
+  server uwsgi:8001;
+}
+
+# конфигурация веб-сервера
+server {
+  # порт, который будет слушать веб-сервер в ожидании запросов от пользователй
+  listen      80;
+  # доменное имя
+  server_name 0.0.0.0; # замените на собственный домен или IP адрес
+  charset     utf-8;
+  client_max_body_size 75M;
+
+  location / {
+    uwsgi_pass  flask;
+    include /usr/share/nginx/uwsgi_params;
+  }
+}

@@ -1,0 +1,14 @@
+.idea
+
+__pycache__
+
+docker/dockerfiles/uwsgi.Dockerfile
+
+uwsgi.ini
+
+nginx.conf
+
+docker/docker-compose.yml
+
+logs
+

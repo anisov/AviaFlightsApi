@@ -1,0 +1,15 @@
+[uwsgi]
+chdir = /code
+module = wsgi:app
+vacuum = True
+max-requests = 8001
+harakiri = 1800
+socket = 0.0.0.0:8001
+chmod-socket = 660
+master = true
+processes = 8
+buffer-size = 65535
+limit-post = 1048576000
+post-buffering = 10485760
+die-on-term = true
+enable-threads = true
