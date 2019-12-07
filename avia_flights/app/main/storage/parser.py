@@ -135,7 +135,9 @@ class CreateStorage:
                 transplants.append(self.__create_flight_data(flight))
             return transplants
 
-    def _load_and_create_routes(self, xml_data) -> typing.List[Route]:
+    def _load_and_create_routes(
+        self, xml_data: str,
+    ) -> typing.List[Route]:
         """
         Load xml and create routes
         """
@@ -154,8 +156,17 @@ class CreateStorage:
                 route.find("ReturnPricedItinerary"),
             )
             pricing = self._create_pricing(route.find("Pricing"))
+            request_datetime = datetime.strptime(
+                xml.AirFareSearchResponse.get('ResponseTime'),
+                "%d-%m-%Y %H:%M:%S"
+            ),
             all_routes.append(
-                Route(onward_itinerary, return_itinerary, pricing)
+                Route(
+                    onward_itinerary,
+                    return_itinerary,
+                    pricing,
+                    request_datetime
+                )
             )
         return all_routes
 

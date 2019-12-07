@@ -20,6 +20,7 @@ class Route:
     onward_itinerary: list
     return_itinerary: list
     pricing: dict
+    request_datetime: datetime
 
     def find_source(self, src: str) -> bool:
         """
@@ -52,6 +53,18 @@ class Route:
             self.onward_itinerary[-1].arrival_time_stamp
             - self.onward_itinerary[0].departure_time_stamp
         )
+
+    def __hash__(self):
+        self.request_id = None
+        return hash(self.to_json())
+
+    def __eq__(self, other):
+        self.request_id = None
+        other.request_id = None
+        return self.to_json() == other.to_json()
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 
 @dataclass_json
@@ -93,7 +106,7 @@ class RouteStorage:
     routes: typing.List[Route]
 
     @staticmethod
-    def get_sort_func(
+    def _get_sort_func(
         sort_attr: typing.Optional[str] = None,
     ) -> typing.Callable:
         sort_func = {
@@ -120,9 +133,27 @@ class RouteStorage:
             if route.find_source(source)
             and route.find_destination(destination)
         ]
-        if self.get_sort_func(sort_attr):
-            routes.sort(key=self.get_sort_func(sort_attr))
+        if self._get_sort_func(sort_attr):
+            routes.sort(key=self._get_sort_func(sort_attr))
             # Choose the fastest/cheapest/ ...,
             # leave a list for data uniformity
             routes: list = routes[:limit]
         return routes
+
+    def get_diff(self) -> set:
+        request_routes = dict()
+
+        for route in self.routes:
+            request_routes.setdefault(
+                route.request_datetime, set()
+            ).add(route)
+
+        request_datetimes: typing.List[datetime] = sorted(
+            request_routes.keys()
+        )
+        # Compare the last request with the penultimate one,
+        # if there were not 2, but 3 requests, in order to display the changed
+        # flights from the last request.
+        last_request = request_routes.pop(request_datetimes.pop())
+        pre_last_request = request_routes.pop(request_datetimes.pop())
+        return last_request.difference(pre_last_request)

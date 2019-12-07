@@ -28,3 +28,27 @@ class SearchRoutes(MethodView):
         )
         data = convert_to_dict(routes)
         return jsonify(data)
+
+
+class DiffRoutes(MethodView):
+    def get(self):
+        """
+        /api/v1/routes/diff_routes
+        :return: json
+        """
+        storage = CreateStorage.execute()
+        routes = storage.get_diff()
+        data = convert_to_dict(routes)
+        return jsonify(data)
+
+
+class DiffRoutes(MethodView):
+    def get(self):
+        """
+        /api/v1/diff_request/
+        :return: json
+        """
+        storage = CreateStorage.execute()
+        routes = storage.get_diff()
+        data = convert_to_dict(routes)
+        return jsonify(data)
