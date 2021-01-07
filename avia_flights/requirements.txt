@@ -3,5 +3,5 @@ dataclasses-json==0.3.6
 Flask==1.1.1
 Flask-Script==2.0.6
 Flask-Testing==0.7.1
-lxml==4.4.1
+lxml==4.6.2
 uWSGI==2.0.18
